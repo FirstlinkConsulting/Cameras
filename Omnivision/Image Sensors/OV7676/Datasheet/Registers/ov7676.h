@@ -29,7 +29,7 @@
 // Image Orientation
 // We can do:
 // Horizontal Mirror
-// Vertical Flip 
+// Vertical Flip
 #define REG_IMAGE_ORIENTATION             (0x3820)
 #define VERTICAL_FLIP                     (0x01 << 3)
 #define HORIZONTAL_MIRROR                 (0x01 << 2)
@@ -459,30 +459,90 @@
 
 // 7-25 SDE Control Registers
 #define REG_SDE_EN_CTRL                 (0x5800)
+//Bit[0]: Reserved - not Used
+
+//Bit[1]: Saturation enabled
+//        Color saturation enable signal
+//        0: Disable
+//        1: Enable
+#define   SATURATION_ENABLE (0x01 << 1)
+
+//Bit[2]: Contrast enable
+//        Y contrast enable signal
+//        0: Disable
+//        1: Enable
+#define   CONTRAST_ENABLE (0x01 << 2)
+
+//Bit[3]: fixu_enable
+//        When set to 1 U output will be a fixed Value
+//        set by register sat_th2/fixu
+#define   FIX_U_ENABLE  (0x01 << 3)
+
+//Bit[4]: fixv_enable
+//        When set to 1 V output will be a fixed Value
+//        set by register sat_th2/fixv
+#define   FIX_V_ENABLE  (0x01 << 4)
+
+//Bit[5]: Gray Enable
+//        When set to 1, UV output will be a fixed value of 128
+//        output image is Black and white
+#define   GRAY_ENABLE   (0x01 << 5)
+
+//Bit[6]: Neg enabled
+//        When set to 1 output data will be the reversed value of the Data
+#define   NEG_ENABLE    (0x01 << 6)
+
+//Bit[7]: FixY enavle
+//        When set to 1 Y output will be a fixed value
+//        set by register yoffset/FixY
+#define   FiXy_ENABLE   (0x01 << 7)  
+
+
+
+
+
+
+
 #define REG_SATURATION_TH2              (0x5803)
+//Bit[7:0]: sat_U
+// When fixu_en is enabled, it fixed U Value
+// When fixu_en is 0 and uvadj_man is 1,
+// it is saturation coefficient for U. When both
+// of fixu_en and uvadj_man_en are 0, it is the
+// bottom saturation treshold used to
+// calculate the UV adjust coeeficient
+#define   SAT_U       (0xFFFF << 0)
+
+
 #define REG_SATURATION_TH1              (0x5804)
-
-
+//Bit[7:0]: sat_V
+// When fixv_en is enabled, it fixed V Value
+// When fixv_en is 0 and uvadj_man is 1,
+// it is saturation coefficient for V. When both
+// of fixv_en and uvadj_man_en are 0, it is the
+// bottom saturation treshold used to
+// calculate the UV adjust coeeficient
+#define   SAT_V       (0xFFFF << 0)
 
 
 #define REG_Y_OFFSET                    (0x5805)
 //Bit[7:0]:  Yoffset
 //	     Offset coefficient for Y contrast calculation
-//	    It is combined with Y GAIN and Y OFFSET  
+//	    It is combined with Y GAIN and Y OFFSET
 //	    to calculate contrasted Y
-#define 	Y	OFFSET		(0xFFFF << 0)
+#define 	Y_OFFSET		(0xFFFF << 0)
 
 #define REG_Y_GAIN                      (0x5806)
 //Bit[7:0]: Ygaim
-//	    Gain coefficient for Y contrast calculation 
-//	    It is combined with Y OFFSET and   
+//	    Gain coefficient for Y contrast calculation
+//	    It is combined with Y OFFSET and
 //	    Y BRIGHT to calculate contrasted Y
 #define 	YGAIN			(0xFFFF << 0)
 
 #define REG_Y_BRIGHT                    (0x5807)
 //Bit[7:0]: Ybright
-//	    Bright coefficient for Y contrast calculation 
-//	    It is combined with Y GAIN and Y OFFSET  
+//	    Bright coefficient for Y contrast calculation
+//	    It is combined with Y GAIN and Y OFFSET
 //	    to calculate contrasted Y
 #define 	YBRIGHT			(0xFFFF << 0)
 
@@ -507,15 +567,15 @@
 #define REG_UVADJ_GAIN_TH1              (0x5809)
 // Bit[7:0]: gain_th1
 // UV adjust curve bottom gain threshold
-// when real gain, which has 3 bit precision is 
+// when real gain, which has 3 bit precision is
 // less than gain-th1, uv_adj is sat_th2
-// 
-// when real gain, which has 3 bit precision is 
+//
+// when real gain, which has 3 bit precision is
 // larger than gain_th2, uv_adj is sat_th1
 //
-// when real gain, which has 3 bit precision is 
+// when real gain, which has 3 bit precision is
 // larger than gain_th1 and less than gain_th2
-// uv_adj = sat_th1 + ( sat_th2 -sat_th1) * 
+// uv_adj = sat_th1 + ( sat_th2 -sat_th1) *
 // (gain_th2 - real-gain)/ (gain_th2 - gain-th1)
 #define		GAIN_TH1		(0xFFFF << 0)
 
@@ -524,15 +584,15 @@
 #define REG_UVADJ_GAIN_TH2              (0x580A)
 // Bit[7:0]: gain_th2
 // UV adjust curve top gain threshold
-// when real gain, which has 3 bit precision is 
+// when real gain, which has 3 bit precision is
 // less than gain-th1, uv_adj is sat_th2
-// 
-// when real gain, which has 3 bit precision is 
+//
+// when real gain, which has 3 bit precision is
 // larger than gain_th2, uv_adj is sat_th1
 //
-// when real gain, which has 3 bit precision is 
+// when real gain, which has 3 bit precision is
 // larger than gain_th1 and less than gain_th2
-// uv_adj = sat_th1 + ( sat_th2 -sat_th1) * 
+// uv_adj = sat_th1 + ( sat_th2 -sat_th1) *
 // (gain_th2 - real-gain)/ (gain_th2 - gain-th1)
 #define		GAIN_TH2		(0xFFFF << 0)
 
@@ -541,8 +601,8 @@
 
 // Bit[0]: uvadj_man_en
 // 0: Use the calculated uv-adj for UV adjust coefficient
-// 1: Use the sat_th1 for V saturation coefficient 
-//    Use the sat-th2 for U saturation coefficient 
+// 1: Use the sat_th1 for V saturation coefficient
+//    Use the sat-th2 for U saturation coefficient
 #define 	UVADJ_MAN_EN		(0x01 << 0)
 
 // Bit[1]: offset_man_en
