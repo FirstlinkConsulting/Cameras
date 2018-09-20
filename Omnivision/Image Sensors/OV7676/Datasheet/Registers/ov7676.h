@@ -452,8 +452,15 @@
 #define REG_CMX15                       (0x5604)
 #define REG_CMX16                       (0x5605)
 #define REG_CMX_SIGN                    (0x5612)
-#define REG_CMX_CTRL                    (0x5615)
 
+#define REG_CMX_CTRL                    (0x5615)
+//Bit[0]: cmx1cmx1_db_en
+//        0: Disable
+//        1: Ennable
+// other bits not defined in Data Sheet
+// but default value of reg is 0x07
+// ASK OMNIVISION for details
+#define   CMX1CMX1CMX1CMX1_DB_EN      (0x01 << 0)
 
 
 
@@ -495,7 +502,7 @@
 //Bit[7]: FixY enavle
 //        When set to 1 Y output will be a fixed value
 //        set by register yoffset/FixY
-#define   FiXy_ENABLE   (0x01 << 7)  
+#define   FiXy_ENABLE   (0x01 << 7)
 
 
 
