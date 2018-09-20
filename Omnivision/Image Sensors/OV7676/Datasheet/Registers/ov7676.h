@@ -461,11 +461,65 @@
 #define REG_SDE_EN_CTRL                 (0x5800)
 #define REG_SATURATION_TH2              (0x5803)
 #define REG_SATURATION_TH1              (0x5804)
+
+
+
+
 #define REG_Y_OFFSET                    (0x5805)
+//Bit[7:0]:  Yoffset
+//	     Offset coefficient for Y contrast calculation
+//	    It is combined with Y GAIN and Y OFFSET  
+//	    to calculate contrasted Y
+#define 	Y	OFFSET		(0xFFFF << 0)
+
 #define REG_Y_GAIN                      (0x5806)
+//Bit[7:0]: Ygaim
+//	    Gain coefficient for Y contrast calculation 
+//	    It is combined with Y OFFSET and   
+//	    Y BRIGHT to calculate contrasted Y
+#define 	YGAIN			(0xFFFF << 0)
+
 #define REG_Y_BRIGHT                    (0x5807)
+//Bit[7:0]: Ybright
+//	    Bright coefficient for Y contrast calculation 
+//	    It is combined with Y GAIN and Y OFFSET  
+//	    to calculate contrasted Y
+#define 	YBRIGHT			(0xFFFF << 0)
+
+
 #define REG_SIGN_BITS                   (0x5808)
+// Bit[1:0]: Reserved - Not used
+
+// Bit[2]: yoffset_sign_bit
+//         Sign bit for yoffset
+//         0: Yoffset is positive number (yoffset)
+//         1: Yoffset is negative number (-1 * yoffset)
+//
+#define		YOFFSET_SIGN_BIT	(0x01 << 2)
+// Bit[2]: yoffset_sign_bit
+//         Sign bit for ybright
+//         0: Ybright is positive number (ybright)
+//         1: Ybright is negative number (-1 * ybright)
+#define		YBRIGHT_SIGN_BIT	(0x01 << 3)
+
+// Bit[7:4]: Reserved - Not used
+
 #define REG_UVADJ_GAIN_TH1              (0x5809)
+// Bit[7:0]: gain_th1
+// UV adjust curve bottom gain threshold
+// when real gain, which has 3 bit precision is 
+// less than gain-th1, uv_adj is sat_th2
+// 
+// when real gain, which has 3 bit precision is 
+// larger than gain_th2, uv_adj is sat_th1
+//
+// when real gain, which has 3 bit precision is 
+// larger than gain_th1 and less than gain_th2
+// uv_adj = sat_th1 + ( sat_th2 -sat_th1) * 
+// (gain_th2 - real-gain)/ (gain_th2 - gain-th1)
+#define		GAIN_TH1		(0xFFFF << 0)
+
+
 
 #define REG_UVADJ_GAIN_TH2              (0x580A)
 // Bit[7:0]: gain_th2
@@ -474,7 +528,7 @@
 // less than gain-th1, uv_adj is sat_th2
 // 
 // when real gain, which has 3 bit precision is 
-// larger than gain_th2, uv_adj is sat_h1
+// larger than gain_th2, uv_adj is sat_th1
 //
 // when real gain, which has 3 bit precision is 
 // larger than gain_th1 and less than gain_th2
